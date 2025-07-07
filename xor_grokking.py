@@ -16,9 +16,9 @@ def generate_xor_data(n, p, epsilon):
     return torch.tensor(X, dtype=torch.float64), torch.tensor(y, dtype=torch.float64)
 
 def centroid_statistics(point, centroids):
-    centroid = centroids.compute_centroids(point)[0]
-    inner_product = (centroid * point).sum(dim=1).item()
-    norm = centroid.norm().item()
+    centroids(point)
+    inner_product = centroids.get_inner_products()[0].item()
+    norm = centroids.get_norms()[0].item()
     return {
         'centroid_norm': norm,
         'centroid_alignment': inner_product / torch.clamp(norm * point.norm(), min=1e-8).item()

@@ -114,18 +114,16 @@ def compute_rate_of_change_of_alignment(ntks, losses, lr):
     return lr * np.mean(np.multiply(ntks, losses))
 
 def centroid_statistics(point, centroids):
-    centroid = centroids.compute_centroids(point).cpu()[0]
-    inner_product = (centroid * point).sum(dim=1).item()
-    norm = centroid.norm().item()
+    centroids(point)
     return {
-        'norm': norm,
-        'unnormalised': inner_product,
-        'normalised': inner_product / torch.clamp(norm * point.norm(), min=1e-8).item()
+        'norm': centroids.get_norms()[0].item(),
+        'unnormalised': centroids.get_inner_products()[0].item(),
+        'normalised': centroids.get_alignments()[0].item()
     }
 
 def train(config):
     run_name=f"{config.width}width-{config.init_scale}initscale-{config.output_scale}outputscale-{config.seed}"
-    run = wb.init(project='centroid_alignment_ntk', config=vars(config), name=run_name)
+    run = wb.init(project='centroid_alignment_ntk_test', config=vars(config), name=run_name)
     set_global_seed(config.seed)
     loaders = prepare_dataloaders(download_directory=config.download_dir)
     sample_point, _ = next(iter(loaders['train']))

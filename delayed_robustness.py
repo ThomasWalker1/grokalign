@@ -159,7 +159,7 @@ def train(config):
                     stats[f'{name}_accuracy'] = compute_accuracy(model, loader, config.device)
             adversary = AutoAttack(model, norm='Linf', eps=4/255., verbose=False, attacks_to_run=['apgd-ce'], version='custom')
             stats['test_adv_accuracy_4'] = adversary.run_standard_evaluation_individual(x_test, y_test, bs=256)['apgd-ce']
-            stats['centroid_alignment'] = centroids.compute_alignments(x).mean().item()
+            stats['centroid_alignment'] = centroids(x).get_alignments().mean().item()
             stats['pc1'] = pc1(x[:64])
             wb.log(stats)
 

@@ -48,10 +48,9 @@ def compute_accuracy(model, loader, device):
     return correct / total
 
 def centroid_statistics(centroids, x):
-    centroid = centroids.compute_centroids(x)
-    inner_product = (centroid * x).sum(dim=1)
-    norm = centroid.norm(dim=1)
-    alignment = (inner_product / torch.clamp(norm * x.norm(dim=1), min=1e-8)).mean().item()
+    centroids(x)
+    norm = centroids.get_norms()
+    alignment = centroids.get_alignments()
     return {'centroid_norm': norm.mean().item(), 'centroid_alignment': alignment}
 
 def train(config):
