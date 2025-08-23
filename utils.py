@@ -43,43 +43,6 @@ class GrokAlign:
     def __call__(self, inputs: torch.Tensor) -> torch.Tensor:
         return self.compute_jacobian_norm(inputs).mean()
 
-# class Centroids:
-#     def __init__(self, model: nn.Module, device=None):
-#         self.model = model
-#         self.device = device if device is not None else next(model.parameters()).device
-
-#     def compute_centroids(self, x: torch.Tensor) -> torch.Tensor:
-#         x = x.requires_grad_(True).to(self.device)
-#         output = self.model(x)
-#         grad_output = torch.ones_like(output)
-#         centroids = torch.autograd.grad(
-#             outputs=output,
-#             inputs=x,
-#             grad_outputs=grad_output,
-#             retain_graph=True
-#         )[0]
-#         return centroids
-    
-#     def compute_inner_product(self, x:torch.Tensor) -> torch.Tensor:
-#         x = x.requires_grad_(True).to(self.device)
-#         centroids = self.compute_centroids(x)
-#         centroids = centroids.reshape(centroids.size(0),-1)
-#         x = x.reshape(x.size(0),-1)
-#         inner_products = (centroids * x).sum(dim=1)
-#         return inner_products
-
-#     def compute_alignments(self, x: torch.Tensor) -> torch.Tensor:
-#         x = x.requires_grad_(True).to(self.device)
-#         centroids = self.compute_centroids(x)
-#         centroids = centroids.reshape(centroids.size(0),-1)
-#         x = x.reshape(x.size(0),-1)
-#         sims = (centroids * x).sum(dim=1) / torch.clamp(centroids.norm(dim=1) * x.norm(dim=1), min=1e-8)
-#         return sims
-
-#     def compute_norms(self, x: torch.Tensor) -> torch.Tensor:
-#         centroids = self.compute_centroids(x)
-#         return centroids.norm(dim=1)
-
 class Centroids:
     def __init__(self, model: nn.Module, device=None):
         self.model = model
@@ -151,7 +114,7 @@ class PC1:
         return pc1s.mean().item()
     
 
-## Grokfast
+## Grokfast, https://arxiv.org/abs/2405.20233
 
 from collections import deque
 from typing import Dict, Optional, Literal
@@ -202,7 +165,7 @@ def gradfilter_ema(
 
     return grads
 
-## Transformer Alignmen, Reference: https://github.com/mechanistic-interpretability-grokking
+## Transformer Alignment, Reference: https://github.com/mechanistic-interpretability-grokking
 
 import torch
 import torch.nn as nn
